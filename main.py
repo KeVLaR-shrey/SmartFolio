@@ -2,20 +2,23 @@ from flask import Flask, render_template, request, session
 from flask_mysqldb import MySQL
 from datetime import timedelta
 import hashlib
-import yaml
+# import yaml
 from json import dumps
 import time
+# import secrets
+# secrets.token_urlsafe(16) 
+# 'Drmhze6EPcv0fN_81Bj-nA'
 
 app = Flask(__name__)
 mysql = MySQL(app)
-db = yaml.load(open('db.yaml'))
-app.secret_key = db['secret_key']
+# db = yaml.full_load(open('db.yaml'))
+app.secret_key = ['Drmhze6EPcv0fN_81Bj-nA']
 app.permanent_session_lifetime = timedelta(minutes=10) # Session lasts for 10 minutes
 
-app.config['MYSQL_USER'] = db['mysql_user']
-app.config['MYSQL_PASSWORD'] = db['mysql_password']
-app.config['MYSQL_HOST'] = db['mysql_host']
-app.config['MYSQL_DB'] = db['mysql_db']
+app.config['MYSQL_USER'] = 'root'
+app.config['MYSQL_PASSWORD'] = '12345678'
+app.config['MYSQL_HOST'] = 'localhost'
+app.config['MYSQL_DB'] = 'portfolio'
 # Default is tuples
 # app.config['MYSQL_CURSORCLASS'] = 'DictCursor'
 
@@ -43,6 +46,7 @@ def index():
         for user in all_users:
             # Check if the entered username and password is correct
             if user[0] == username and user[1] == password_hashed:
+                app.debug = True
                 session['user'] = username
                 return portfolio()
         return render_template('alert2.html')
@@ -51,6 +55,7 @@ def index():
 
 
 @app.route('/portfolio.html')
+
 def portfolio():
 
     # Check if we have logged in users
